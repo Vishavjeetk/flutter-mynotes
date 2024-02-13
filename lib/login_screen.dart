@@ -71,7 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         if(context.mounted){
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text(
-                                  "User LoggedIn Successfully")));}
+                                  "User LoggedIn Successfully")));
+                          Navigator.pushNamedAndRemoveUntil(context, '/notes_view/', (route) => false);
+                        }
                       }
                       catch (e) {
                         if(context.mounted) {

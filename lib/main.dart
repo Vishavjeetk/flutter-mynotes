@@ -4,6 +4,7 @@ import 'package:flutter_notes/verify_email_view.dart';
 
 import 'home_page.dart';
 import 'login_screen.dart';
+import 'notes_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: const HomePage(),
       routes: {
         '/login/': (context) {
@@ -24,7 +26,8 @@ class MyApp extends StatelessWidget {
         '/register/': (context) {
           return const RegistrationScreen();
         },
-        '/verify_email/': (context) => const VerifyEmailView()
+        '/verify_email/': (context) => const VerifyEmailView(),
+        '/notes_view/': (context) => const NotesView()
       },
     );
   }

@@ -19,7 +19,13 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           const Text("Your Email is not verified! Please Verify it by clicking link below"),
           TextButton(onPressed: () {
             FirebaseAuth.instance.currentUser!.sendEmailVerification();
-          }, child: const Text("Send Email to Verify!"))],
+          }, child: const Text("Send Email to Verify!")),
+          TextButton(onPressed: () async {
+            await FirebaseAuth.instance.currentUser!.reload();
+            if (context.mounted && FirebaseAuth.instance.currentUser!.emailVerified) {
+              Navigator.pushNamedAndRemoveUntil(context, '/notes_view/', (route) => false);
+            }
+          }, child: const Text("Click here if you have verified your email"),)],
       ),
     );
   }

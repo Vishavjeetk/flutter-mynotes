@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_notes/firebase_options.dart';
 import 'package:flutter_notes/login_screen.dart';
+import 'package:flutter_notes/notes_view.dart';
 import 'package:flutter_notes/registration_screen.dart';
 import 'package:flutter_notes/verify_email_view.dart';
 
@@ -28,6 +29,9 @@ class _HomePageState extends State<HomePage> {
               }
               else if (!FirebaseAuth.instance.currentUser!.emailVerified) {
                 return const VerifyEmailView();
+              }
+              else if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                return const NotesView();
               }
             default:
               return const Scaffold(body: Center(child: CircularProgressIndicator()));
