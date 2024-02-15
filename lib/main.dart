@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_notes/registration_screen.dart';
-import 'package:flutter_notes/verify_email_view.dart';
-
+import 'package:flutter_notes/views/registration_screen.dart';
+import 'package:flutter_notes/utilities/routes.dart';
+import 'package:flutter_notes/views/verify_email_view.dart';
 import 'home_page.dart';
-import 'login_screen.dart';
-import 'notes_view.dart';
+import 'views/login_screen.dart';
+import 'views/notes_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,14 +20,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       routes: {
-        '/login/': (context) {
+        loginScreen: (context) {
           return const LoginScreen();
         },
-        '/register/': (context) {
+        registerScreen: (context) {
           return const RegistrationScreen();
         },
-        '/verify_email/': (context) => const VerifyEmailView(),
-        '/notes_view/': (context) => const NotesView()
+        verifyEmail: (context) => const VerifyEmailView(),
+        notesView: (context) => const NotesView()
       },
     );
   }

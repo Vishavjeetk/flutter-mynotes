@@ -1,5 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/auth/auth_service.dart';
+import 'package:flutter_notes/utilities/routes.dart';
+
+import '../enums/menu_actions.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -7,8 +10,6 @@ class NotesView extends StatefulWidget {
   @override
   State<NotesView> createState() => _NotesViewState();
 }
-
-enum PopUpMenuItems { logout, profile }
 
 class _NotesViewState extends State<NotesView> {
   @override
@@ -22,8 +23,8 @@ class _NotesViewState extends State<NotesView> {
               case PopUpMenuItems.logout:
                 final shouldSignOutResult = await shouldSignOut(context);
                 if (shouldSignOutResult && context.mounted) {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushNamedAndRemoveUntil(context, '/login/', (route) => false);
+                  AuthService.firebase().logOut();
+                  Navigator.pushNamedAndRemoveUntil(context, loginScreen, (route) => false);
                 }
               case PopUpMenuItems.profile:
               // TODO: Handle this case.

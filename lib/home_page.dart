@@ -1,11 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_notes/firebase_options.dart';
-import 'package:flutter_notes/login_screen.dart';
-import 'package:flutter_notes/notes_view.dart';
-import 'package:flutter_notes/registration_screen.dart';
-import 'package:flutter_notes/verify_email_view.dart';
+import 'package:flutter_notes/auth/auth_service.dart';
+import 'package:flutter_notes/views/login_screen.dart';
+import 'package:flutter_notes/views/notes_view.dart';
+import 'package:flutter_notes/views/registration_screen.dart';
+import 'package:flutter_notes/views/verify_email_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,19 +16,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform
-        ),
+        future: AuthService.firebase().initializeApp(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              if (FirebaseAuth.instance.currentUser == null) {
+              if (AuthService.firebase().currentUser == null) {
                 return const RegistrationScreen();
               }
-              else if (!FirebaseAuth.instance.currentUser!.emailVerified) {
+              else if (AuthService.firebase().currentUser!.isEmailVerified) {
                 return const VerifyEmailView();
               }
-              else if (FirebaseAuth.instance.currentUser!.emailVerified) {
+              else if (AuthService.firebase().currentUser!.isEmailVerified) {
                 return const NotesView();
               }
             default:

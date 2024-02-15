@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/auth/auth_service.dart';
+import 'package:flutter_notes/utilities/routes.dart';
 
-import 'firebase_options.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,13 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: const Text("Flutter App"),
       ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ), builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            return Column(
+      body: Column(
               children: [
                 TextField(
                   keyboardType: TextInputType.emailAddress,
@@ -65,14 +58,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       final email = _email.text;
                       final password = _password.text;
                       try {
-                        await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                            email: email, password: password);
-                        if(context.mounted){
+                        await AuthService.firebase().signInWithEmailAndPassword(email: email, password: password,);
+                        if (context.mounted && !AuthService.firebase().currentUser!.isEmailVerified) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text(
+                                  "Verify Email First")));
+                        }
+                        if(context.mounted && AuthService.firebase().currentUser!.isEmailVerified){
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text(
                                   "User LoggedIn Successfully")));
-                          Navigator.pushNamedAndRemoveUntil(context, '/notes_view/', (route) => false);
+                          Navigator.of(context).pushNamedAndRemoveUntil(notesView, (route) => false);
                         }
                       }
                       catch (e) {
@@ -84,15 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text("Login")),
                 const SizedBox(height: 20,),
                 TextButton(onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(context, '/register/', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(context, registerScreen, (route) => false);
                   }, child: const Text("New User! Register Here."))
               ],
-            );
-          default:
-            return const Text("Loading.......");
-        }
-      },
-      ),
+            ),
     );
   }
 }
