@@ -68,7 +68,7 @@ class FirebaseAuthProvider implements MyAuthProvider {
       );
       final user = currentUser;
       if (user != null) {
-        return AuthUser(user.isEmailVerified);
+        return user;
       }
       else {
         throw UserNotLoggedInAuthException();
