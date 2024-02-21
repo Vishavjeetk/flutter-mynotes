@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_notes/auth/auth_service.dart';
+import 'package:flutter_notes/services/auth/auth_service.dart';
 import 'package:flutter_notes/views/login_screen.dart';
 import 'package:flutter_notes/views/notes_view.dart';
 import 'package:flutter_notes/views/registration_screen.dart';
