@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/views/new_notes_view.dart';
 import 'package:flutter_notes/views/registration_screen.dart';
 import 'package:flutter_notes/utilities/routes.dart';
 import 'package:flutter_notes/views/verify_email_view.dart';
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
           return const RegistrationScreen();
         },
         verifyEmail: (context) => const VerifyEmailView(),
-        notesView: (context) => const NotesView()
+        notesView: (context) => const NotesView(),
+        newNotesView: (context) => const NewNotesView()
       },
     );
   }

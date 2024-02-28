@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_notes/services/auth/auth_service.dart';
+import 'package:flutter_notes/services/crud/notes_service.dart';
 import 'package:flutter_notes/utilities/routes.dart';
 
 import '../enums/menu_actions.dart';
@@ -12,12 +13,30 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
+  late final NoteService _noteService;
+  final userEmail = AuthService.firebase().currentUser!.email;
+
+  @override
+  void initState() {
+    _noteService = NoteService();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _noteService.closeDatabase();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Notes"),
         actions: [
+          IconButton(onPressed: () {
+            Navigator.pushNamed(context, newNotesView);
+          }, icon: const Icon(Icons.add)),
           PopupMenuButton<PopUpMenuItems>(onSelected: (event) async {
             switch (event) {
               case PopUpMenuItems.logout:
@@ -37,6 +56,27 @@ class _NotesViewState extends State<NotesView> {
             ];
           })
         ],
+      ),
+      body: FutureBuilder(
+        future: _noteService.getAllNotes(),
+        builder: (context,snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return StreamBuilder(stream: _noteService.allNotes, builder: (context,snapshot) {
+                switch (snapshot.connectionState) {
+
+                  case ConnectionState.waiting:
+                    // TODO: Handle this case.
+
+                  default:
+                    return const Text("Loading");
+                }
+              });
+
+            default:
+              return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
