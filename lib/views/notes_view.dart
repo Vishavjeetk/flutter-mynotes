@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_notes/services/auth/auth_service.dart';
 import 'package:flutter_notes/services/crud/notes_service.dart';
 import 'package:flutter_notes/utilities/routes.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../enums/menu_actions.dart';
 
@@ -14,18 +15,12 @@ class NotesView extends StatefulWidget {
 
 class _NotesViewState extends State<NotesView> {
   late final NoteService _noteService;
-  final userEmail = AuthService.firebase().currentUser!.email;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
 
   @override
   void initState() {
     _noteService = NoteService();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _noteService.closeDatabase();
-    super.dispose();
   }
 
   @override
@@ -58,15 +53,28 @@ class _NotesViewState extends State<NotesView> {
         ],
       ),
       body: FutureBuilder(
-        future: _noteService.getAllNotes(),
+        future: _noteService.getOrCreateUser(email: userEmail),
         builder: (context,snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              return StreamBuilder(stream: _noteService.allNotes, builder: (context,snapshot) {
+              return StreamBuilder(
+                  stream: _noteService.allNotes,
+                  builder: (context,snapshot) {
                 switch (snapshot.connectionState) {
-
                   case ConnectionState.waiting:
-                    // TODO: Handle this case.
+                  case ConnectionState.active:
+                    if (snapshot.hasData) {
+                      final allNotes = snapshot.data as List<DatabaseNote>;
+                      return ListView.builder(
+                          itemCount: allNotes.length,
+                          itemBuilder: (context, index) {
+                            final note = allNotes[index];
+                        return ListTile(title:Text(note.title),);
+                      });
+                    }
+                    else {
+                      return const Text("No Data to Show");
+                    }
 
                   default:
                     return const Text("Loading");

@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
               if (AuthService.firebase().currentUser == null) {
                 return const RegistrationScreen();
               }
-              else if (AuthService.firebase().currentUser!.isEmailVerified) {
+              else if (!AuthService.firebase().currentUser!.isEmailVerified) {
                 return const VerifyEmailView();
               }
               else if (AuthService.firebase().currentUser!.isEmailVerified) {

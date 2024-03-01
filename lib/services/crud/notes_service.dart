@@ -8,15 +8,21 @@ import 'package:path_provider/path_provider.dart'
 import 'crud_exceptions.dart';
 
 class NoteService {
+  List<DatabaseNote> _notes = [];
 
   static final NoteService _shared = NoteService._sharedInstance();
-  NoteService._sharedInstance();
+  NoteService._sharedInstance() {
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      }
+    );
+  }
   factory NoteService() => _shared;
 
   sqflite.Database? _db;
 
-  List<DatabaseNote> _notes = [];
-  final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
   Future<void> _cachedNotes() async {
@@ -47,6 +53,7 @@ class NoteService {
       rethrow;
     }
   }
+
   Future<DatabaseNote> updateNote ({required DatabaseNote note, required String text,}) async {
     await ensuringDbIsOpen();
     final db = _getDatabaseOrThrowException();
@@ -264,5 +271,5 @@ const userTable = "user";
 const idCol = "id";
 const emailCol = "email";
 const userIdCol = "user_id";
-const titleCol = "title";
+const titleCol = "text";
 const isSyncedWithCloudCol = "is_synced_with_cloud";
